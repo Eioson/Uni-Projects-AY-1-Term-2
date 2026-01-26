@@ -64,7 +64,20 @@ public class Pates_Group2Act {
         System.out.print("\nEnter Account Number: ");
         double accNum = sc.nextDouble();
         sc.nextLine(); // consume newline
-        return accounts.get(accNum);
+        return accounts.get(accNum); /* returns the information for the specific account number,
+                                               returns null if not found*/
+    }
+
+    // A helper method for new account registration
+    private static void registerNewAccount(Map<Double, BankAccount> accounts, Scanner sc) {
+        BankAccount newAccount = new BankAccount();
+        newAccount.register(sc);
+        // Check if account number already exists
+        if(accounts.containsKey(newAccount.accountNumber)) {
+            System.out.println("An account with this number already exists. Registration failed.");
+        } else {
+            accounts.put(newAccount.accountNumber, newAccount);
+        }
     }
 
     public static void main(String[] args) {
@@ -94,6 +107,13 @@ public class Pates_Group2Act {
                     continue; // go to the next loop iteration
                 }
                 sc.nextLine(); // Consumes the leftover newline for next input
+
+                // If no accounts exist, force user to create one before other actions.
+                if (accounts.isEmpty() && (choice >= 1 && choice <= 3)) {
+                    System.out.println("\nNo accounts found. Please register an account to begin.");
+                    registerNewAccount(accounts, sc);
+                    continue; // Restart the loop to show the menu again
+                }
 
                 // Switch statement to handle user choice
                 switch (choice) {
@@ -138,14 +158,7 @@ public class Pates_Group2Act {
                     
                     // Case 4: New Account Registration
                     case 4: {
-                        BankAccount newAccount = new BankAccount();
-                        newAccount.register(sc);
-                        // Check if account number already exists
-                        if(accounts.containsKey(newAccount.accountNumber)) {
-                            System.out.println("An account with this number already exists. Registration failed.");
-                        } else {
-                            accounts.put(newAccount.accountNumber, newAccount);
-                        }
+                        registerNewAccount(accounts, sc);
                         break;
                     }
 
